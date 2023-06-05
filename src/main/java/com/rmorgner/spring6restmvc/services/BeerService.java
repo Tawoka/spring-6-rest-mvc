@@ -1,7 +1,6 @@
 package com.rmorgner.spring6restmvc.services;
 
 import com.rmorgner.spring6restmvc.model.Beer;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
