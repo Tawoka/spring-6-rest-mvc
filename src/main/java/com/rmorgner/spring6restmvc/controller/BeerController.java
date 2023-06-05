@@ -22,7 +22,6 @@ public class BeerController {
 
   @PostMapping
   public ResponseEntity handlePost(@RequestBody Beer beer){
-    System.out.println(beer);
     Beer savedBeer = beerService.saveNewBeer(beer);
 
     HttpHeaders httpHeaders = new HttpHeaders();
