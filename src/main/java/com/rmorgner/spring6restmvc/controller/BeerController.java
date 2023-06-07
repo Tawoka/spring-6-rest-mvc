@@ -1,6 +1,6 @@
 package com.rmorgner.spring6restmvc.controller;
 
-import com.rmorgner.spring6restmvc.model.Beer;
+import com.rmorgner.spring6restmvc.model.BeerDTO;
 import com.rmorgner.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class BeerController {
   private final BeerService beerService;
 
   @PatchMapping(ID_PLACEHOLDER)
-  public ResponseEntity updateFieldsById(@PathVariable(ID_FIELD) UUID id, @RequestBody Beer beer){
+  public ResponseEntity updateFieldsById(@PathVariable(ID_FIELD) UUID id, @RequestBody BeerDTO beer){
 
     beerService.patchBeerById(id,beer);
 
@@ -40,15 +40,15 @@ public class BeerController {
   }
 
   @PutMapping(ID_PLACEHOLDER)
-  public ResponseEntity updateById(@PathVariable(ID_FIELD) UUID beerId, @RequestBody Beer beer){
+  public ResponseEntity updateById(@PathVariable(ID_FIELD) UUID beerId, @RequestBody BeerDTO beer){
     beerService.updateById(beerId, beer);
 
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 
   @PostMapping
-  public ResponseEntity handlePost(@RequestBody Beer beer){
-    Beer savedBeer = beerService.saveNewBeer(beer);
+  public ResponseEntity handlePost(@RequestBody BeerDTO beer){
+    BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add("Location", API_STRING + "/" + savedBeer.getId().toString());
@@ -57,12 +57,12 @@ public class BeerController {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public List<Beer> listBeers(){
+  public List<BeerDTO> listBeers(){
     return beerService.listBeers();
   }
 
   @RequestMapping(value = ID_PLACEHOLDER, method = RequestMethod.GET)
-  public Beer getBeerById(@PathVariable(ID_FIELD) UUID beerId){
+  public BeerDTO getBeerById(@PathVariable(ID_FIELD) UUID beerId){
 
     log.debug("Get Beer by id in the controller");
 

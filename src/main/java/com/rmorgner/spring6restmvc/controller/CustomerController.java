@@ -1,6 +1,6 @@
 package com.rmorgner.spring6restmvc.controller;
 
-import com.rmorgner.spring6restmvc.model.Customer;
+import com.rmorgner.spring6restmvc.model.CustomerDTO;
 import com.rmorgner.spring6restmvc.services.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class CustomerController {
   private final CustomerService customerService;
 
   @PatchMapping(ID_PLACEHOLDER)
-  public ResponseEntity patchCustomer(@PathVariable(ID_FIELD) UUID id, @RequestBody Customer customer){
+  public ResponseEntity patchCustomer(@PathVariable(ID_FIELD) UUID id, @RequestBody CustomerDTO customer){
 
     customerService.patchById(id, customer);
 
@@ -40,14 +40,14 @@ public class CustomerController {
   }
 
   @PutMapping(ID_PLACEHOLDER)
-  public ResponseEntity updateCustomer(@PathVariable(ID_FIELD) UUID id, @RequestBody Customer customer){
+  public ResponseEntity updateCustomer(@PathVariable(ID_FIELD) UUID id, @RequestBody CustomerDTO customer){
     customerService.updateCustomer(id, customer);
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 
   @PostMapping
-  public ResponseEntity handlePost(@RequestBody Customer customer){
-    Customer savedCustomer = customerService.saveNewCustomer(customer);
+  public ResponseEntity handlePost(@RequestBody CustomerDTO customer){
+    CustomerDTO savedCustomer = customerService.saveNewCustomer(customer);
 
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add("Location", API_STRING + "/" + savedCustomer.getId().toString());
@@ -56,12 +56,12 @@ public class CustomerController {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public List<Customer> listAllCustomers(){
+  public List<CustomerDTO> listAllCustomers(){
     return customerService.listAllCustomers();
   }
 
   @RequestMapping(value = ID_PLACEHOLDER, method = RequestMethod.GET)
-  public Customer getCustomerById(@PathVariable(ID_FIELD) UUID customerId){
+  public CustomerDTO getCustomerById(@PathVariable(ID_FIELD) UUID customerId){
     return customerService.getCustomerById(customerId).orElseThrow(NotFoundException::new);
   }
 

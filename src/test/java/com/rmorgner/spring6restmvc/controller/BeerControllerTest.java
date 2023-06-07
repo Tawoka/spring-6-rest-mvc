@@ -1,7 +1,7 @@
 package com.rmorgner.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rmorgner.spring6restmvc.model.Beer;
+import com.rmorgner.spring6restmvc.model.BeerDTO;
 import com.rmorgner.spring6restmvc.services.BeerService;
 import com.rmorgner.spring6restmvc.services.BeerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -42,7 +41,7 @@ class BeerControllerTest {
 
   BeerServiceImpl beerServiceImpl;
 
-  Beer testBeer;
+  BeerDTO testBeer;
 
   String API_STRING = "/api/v1/beer";
   String PLACEHOLDER_API_STRING = API_STRING + "/{beerId}";
@@ -57,7 +56,7 @@ class BeerControllerTest {
   ArgumentCaptor<UUID> uuidArgumentCaptor;
 
   @Captor
-  ArgumentCaptor<Beer> beerArgumentCaptor;
+  ArgumentCaptor<BeerDTO> beerArgumentCaptor;
 
   @Test
   void testPatchBeer() throws Exception {
@@ -103,7 +102,7 @@ class BeerControllerTest {
         .andExpect(status().isNoContent())
     ;
 
-    verify(beerService).updateById(any(UUID.class), any(Beer.class));
+    verify(beerService).updateById(any(UUID.class), any(BeerDTO.class));
   }
 
   @Test
@@ -111,7 +110,7 @@ class BeerControllerTest {
     testBeer.setVersion(null);
     testBeer.setId(null);
 
-    given(beerService.saveNewBeer(any(Beer.class))).willReturn(beerServiceImpl.listBeers().get(1));
+    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
 
     mockMvc.perform(post(API_STRING)
             .accept(MediaType.APPLICATION_JSON)

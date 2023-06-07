@@ -1,8 +1,7 @@
 package com.rmorgner.spring6restmvc.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rmorgner.spring6restmvc.model.Customer;
+import com.rmorgner.spring6restmvc.model.CustomerDTO;
 import com.rmorgner.spring6restmvc.services.CustomerService;
 import com.rmorgner.spring6restmvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +41,7 @@ class CustomerControllerTest {
 
   CustomerServiceImpl customerServiceImpl;
 
-  Customer testCustomer;
+  CustomerDTO testCustomer;
 
   String API_STRING = "/api/v1/customer";
   String PLACEHOLDER_API_STRING = API_STRING + "/{customerId}";
@@ -57,7 +56,7 @@ class CustomerControllerTest {
   ArgumentCaptor<UUID> uuidArgumentCaptor;
 
   @Captor
-  ArgumentCaptor<Customer> customerArgumentCaptor;
+  ArgumentCaptor<CustomerDTO> customerArgumentCaptor;
 
   @Test
   void testPatchCustomer() throws Exception {
@@ -102,7 +101,7 @@ class CustomerControllerTest {
         .andExpect(status().isNoContent())
     ;
 
-    verify(customerService).updateCustomer(any(UUID.class), any(Customer.class));
+    verify(customerService).updateCustomer(any(UUID.class), any(CustomerDTO.class));
   }
 
   @Test
@@ -110,7 +109,7 @@ class CustomerControllerTest {
     testCustomer.setId(null);
     testCustomer.setVersion(null);
 
-    given(customerService.saveNewCustomer(any(Customer.class))).willReturn(customerServiceImpl.listAllCustomers().get(1));
+    given(customerService.saveNewCustomer(any(CustomerDTO.class))).willReturn(customerServiceImpl.listAllCustomers().get(1));
 
     mockMvc.perform(
         post(API_STRING)
