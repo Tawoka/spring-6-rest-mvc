@@ -57,7 +57,6 @@ class BeerControllerTest {
 
   @Test
   void testPatchBeer() throws Exception {
-
     Map<String, Object> beerMap = new HashMap<>();
     beerMap.put("name", "New Name");
 
