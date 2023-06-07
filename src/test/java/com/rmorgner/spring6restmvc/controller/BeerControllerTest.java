@@ -43,6 +43,7 @@ class BeerControllerTest {
   Beer testBeer;
 
   String API_STRING = "/api/v1/beer";
+  String PLACEHOLDER_API_STRING = API_STRING + "/{beerId}";
 
   @BeforeEach
   void setUp() {
@@ -62,7 +63,7 @@ class BeerControllerTest {
     beerMap.put("name", "New Name");
 
     mockMvc.perform(
-            patch(API_STRING + "/" + testBeer.getId())
+            patch(PLACEHOLDER_API_STRING, testBeer.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beerMap))
@@ -80,7 +81,7 @@ class BeerControllerTest {
   @Test
   void testDeleteBeer() throws Exception {
     mockMvc.perform(
-            delete(API_STRING + "/" + testBeer.getId())
+            delete(PLACEHOLDER_API_STRING, testBeer.getId())
                 .accept(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isNoContent())
@@ -92,7 +93,7 @@ class BeerControllerTest {
   @Test
   void testUpdateBeer() throws Exception {
     mockMvc.perform(
-            put(API_STRING + "/" + testBeer.getId())
+            put(PLACEHOLDER_API_STRING, testBeer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testBeer))
@@ -139,7 +140,8 @@ class BeerControllerTest {
 
     mockMvc.perform
             (
-                get(API_STRING + "/" + testBeer.getId()).accept(MediaType.APPLICATION_JSON)
+                get(PLACEHOLDER_API_STRING, testBeer.getId())
+                    .accept(MediaType.APPLICATION_JSON)
             )
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))

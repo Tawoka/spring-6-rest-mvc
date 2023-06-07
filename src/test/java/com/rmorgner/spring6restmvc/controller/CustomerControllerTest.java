@@ -44,6 +44,7 @@ class CustomerControllerTest {
   Customer testCustomer;
 
   String API_STRING = "/api/v1/customer";
+  String PLACEHOLDER_API_STRING = API_STRING + "/{customerId}";
 
   @BeforeEach
   void setUp() {
@@ -63,7 +64,7 @@ class CustomerControllerTest {
     customerMap.put("name", "New Name");
 
     mockMvc.perform(
-        patch(API_STRING + "/" + testCustomer.getId())
+        patch(PLACEHOLDER_API_STRING, testCustomer.getId())
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(customerMap))
@@ -79,7 +80,7 @@ class CustomerControllerTest {
   @Test
   void testCustomerDelete() throws Exception {
     mockMvc.perform(
-        delete(API_STRING + "/" + testCustomer.getId())
+        delete(PLACEHOLDER_API_STRING, testCustomer.getId())
             .accept(MediaType.APPLICATION_JSON)
     ).andExpect(status().isNoContent());
 
@@ -92,7 +93,7 @@ class CustomerControllerTest {
   @Test
   void testCustomerUpdate() throws Exception {
     mockMvc.perform(
-        put(API_STRING + "/" + testCustomer.getId())
+        put(PLACEHOLDER_API_STRING, testCustomer.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(testCustomer))
@@ -141,7 +142,7 @@ class CustomerControllerTest {
     given(customerService.getCustomerById(testCustomer.getId())).willReturn(testCustomer);
 
     mockMvc.perform(
-            get(API_STRING + "/" + testCustomer.getId())
+            get(PLACEHOLDER_API_STRING, testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isOk())
