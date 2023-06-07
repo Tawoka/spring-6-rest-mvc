@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -139,7 +140,7 @@ class CustomerControllerTest {
 
   @Test
   void testCustomerById() throws Exception {
-    given(customerService.getCustomerById(testCustomer.getId())).willReturn(testCustomer);
+    given(customerService.getCustomerById(testCustomer.getId())).willReturn(Optional.of(testCustomer));
 
     mockMvc.perform(
             get(PLACEHOLDER_API_STRING, testCustomer.getId())
@@ -154,7 +155,7 @@ class CustomerControllerTest {
 
   @Test
   void testException() throws Exception {
-    given(customerService.getCustomerById(any(UUID.class))).willThrow(NotFoundException.class);
+    given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
 
     mockMvc.perform(
         get(PLACEHOLDER_API_STRING, UUID.randomUUID())

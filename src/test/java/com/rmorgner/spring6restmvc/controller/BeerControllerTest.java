@@ -14,8 +14,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -136,7 +138,7 @@ class BeerControllerTest {
 
   @Test
   void getBeerById() throws Exception {
-    given(beerService.getBeerById(testBeer.getId())).willReturn(testBeer);
+    given(beerService.getBeerById(testBeer.getId())).willReturn(Optional.of(testBeer));
 
     mockMvc.perform
             (
@@ -153,7 +155,7 @@ class BeerControllerTest {
 
   @Test
   void testException() throws Exception {
-    given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+    given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
 
     mockMvc.perform(
       get(PLACEHOLDER_API_STRING, UUID.randomUUID())
