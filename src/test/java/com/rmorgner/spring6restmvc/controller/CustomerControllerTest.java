@@ -13,8 +13,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.core.Is.is;
@@ -36,6 +39,22 @@ class CustomerControllerTest {
   @BeforeEach
   void setUp() {
     customerServiceImpl = new CustomerServiceImpl();
+  }
+
+  @Test
+  void testCustomerUpdate() throws Exception {
+    Customer customer = customerServiceImpl.listAllCustomers().get(0);
+
+    mockMvc.perform(
+        put("/api/v1/customer/" + customer.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(customer))
+    )
+        .andExpect(status().isNoContent())
+    ;
+
+    verify(customerService).updateCustomer(any(UUID.class), any(Customer.class));
   }
 
   @Test
