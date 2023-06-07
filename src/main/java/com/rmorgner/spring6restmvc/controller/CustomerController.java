@@ -19,25 +19,29 @@ import java.util.UUID;
 @RequestMapping("/api/v1/customer")
 public class CustomerController {
 
+  private static final String API_STRING = "/api/v1/customer";
+  private static final String ID_PLACEHOLDER = "{customerId}";
+  private static final String ID_FIELD = "customerId";
+
   private final CustomerService customerService;
 
-  @PatchMapping("{customerId}")
-  public ResponseEntity patchCustomer(@PathVariable("customerId") UUID id, @RequestBody Customer customer){
+  @PatchMapping(ID_PLACEHOLDER)
+  public ResponseEntity patchCustomer(@PathVariable(ID_FIELD) UUID id, @RequestBody Customer customer){
 
     customerService.patchById(id, customer);
 
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 
-  @DeleteMapping("{customerId}")
-  public ResponseEntity deleteById(@PathVariable("customerId") UUID id){
+  @DeleteMapping(ID_PLACEHOLDER)
+  public ResponseEntity deleteById(@PathVariable(ID_FIELD) UUID id){
     customerService.deleteById(id);
 
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 
-  @PutMapping("{customerId}")
-  public ResponseEntity updateCustomer(@PathVariable("customerId") UUID id, @RequestBody Customer customer){
+  @PutMapping(ID_PLACEHOLDER)
+  public ResponseEntity updateCustomer(@PathVariable(ID_FIELD) UUID id, @RequestBody Customer customer){
     customerService.updateCustomer(id, customer);
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
@@ -47,7 +51,7 @@ public class CustomerController {
     Customer savedCustomer = customerService.saveNewCustomer(customer);
 
     HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.add("Location", "/api/v1/customer/" + savedCustomer.getId().toString());
+    httpHeaders.add("Location", API_STRING + "/" + savedCustomer.getId().toString());
 
     return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
   }
@@ -57,8 +61,8 @@ public class CustomerController {
     return customerService.listAllCustomers();
   }
 
-  @RequestMapping(value = "{customerId}", method = RequestMethod.GET)
-  public Customer getCustomerById(@PathVariable("customerId") UUID customerId){
+  @RequestMapping(value = ID_PLACEHOLDER, method = RequestMethod.GET)
+  public Customer getCustomerById(@PathVariable(ID_FIELD) UUID customerId){
     return customerService.getCustomerById(customerId);
   }
 

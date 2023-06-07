@@ -1,6 +1,5 @@
 package com.rmorgner.spring6restmvc.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rmorgner.spring6restmvc.model.Beer;
 import com.rmorgner.spring6restmvc.services.BeerService;
@@ -43,6 +42,8 @@ class BeerControllerTest {
 
   Beer testBeer;
 
+  String API_STRING = "/api/v1/beer";
+
   @BeforeEach
   void setUp() {
     beerServiceImpl = new BeerServiceImpl();
@@ -61,7 +62,7 @@ class BeerControllerTest {
     beerMap.put("name", "New Name");
 
     mockMvc.perform(
-            patch("/api/v1/beer/" + testBeer.getId())
+            patch(API_STRING + "/" + testBeer.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beerMap))
@@ -79,7 +80,7 @@ class BeerControllerTest {
   @Test
   void testDeleteBeer() throws Exception {
     mockMvc.perform(
-            delete("/api/v1/beer/" + testBeer.getId())
+            delete(API_STRING + "/" + testBeer.getId())
                 .accept(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isNoContent())
@@ -91,7 +92,7 @@ class BeerControllerTest {
   @Test
   void testUpdateBeer() throws Exception {
     mockMvc.perform(
-            put("/api/v1/beer/" + testBeer.getId())
+            put(API_STRING + "/" + testBeer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testBeer))
@@ -109,7 +110,7 @@ class BeerControllerTest {
 
     given(beerService.saveNewBeer(any(Beer.class))).willReturn(beerServiceImpl.listBeers().get(1));
 
-    mockMvc.perform(post("/api/v1/beer")
+    mockMvc.perform(post(API_STRING)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(testBeer)))
@@ -124,7 +125,7 @@ class BeerControllerTest {
     given(beerService.listBeers()).willReturn(beerServiceImpl.listBeers());
 
     mockMvc.perform(
-            get("/api/v1/beer").accept(MediaType.APPLICATION_JSON)
+            get(API_STRING).accept(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -138,7 +139,7 @@ class BeerControllerTest {
 
     mockMvc.perform
             (
-                get("/api/v1/beer/" + testBeer.getId()).accept(MediaType.APPLICATION_JSON)
+                get(API_STRING + "/" + testBeer.getId()).accept(MediaType.APPLICATION_JSON)
             )
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))

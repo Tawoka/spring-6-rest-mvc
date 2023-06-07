@@ -43,6 +43,8 @@ class CustomerControllerTest {
 
   Customer testCustomer;
 
+  String API_STRING = "/api/v1/customer";
+
   @BeforeEach
   void setUp() {
     customerServiceImpl = new CustomerServiceImpl();
@@ -61,7 +63,7 @@ class CustomerControllerTest {
     customerMap.put("name", "New Name");
 
     mockMvc.perform(
-        patch("/api/v1/customer/" + testCustomer.getId())
+        patch(API_STRING + "/" + testCustomer.getId())
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(customerMap))
@@ -77,7 +79,7 @@ class CustomerControllerTest {
   @Test
   void testCustomerDelete() throws Exception {
     mockMvc.perform(
-        delete("/api/v1/customer/" + testCustomer.getId())
+        delete(API_STRING + "/" + testCustomer.getId())
             .accept(MediaType.APPLICATION_JSON)
     ).andExpect(status().isNoContent());
 
@@ -90,7 +92,7 @@ class CustomerControllerTest {
   @Test
   void testCustomerUpdate() throws Exception {
     mockMvc.perform(
-        put("/api/v1/customer/" + testCustomer.getId())
+        put(API_STRING + "/" + testCustomer.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(testCustomer))
@@ -109,7 +111,7 @@ class CustomerControllerTest {
     given(customerService.saveNewCustomer(any(Customer.class))).willReturn(customerServiceImpl.listAllCustomers().get(1));
 
     mockMvc.perform(
-        post("/api/v1/customer")
+        post(API_STRING)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(testCustomer))
@@ -125,7 +127,7 @@ class CustomerControllerTest {
     given(customerService.listAllCustomers()).willReturn(customerServiceImpl.listAllCustomers());
 
     mockMvc.perform(
-            get("/api/v1/customer")
+            get(API_STRING)
                 .accept(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isOk())
@@ -139,7 +141,7 @@ class CustomerControllerTest {
     given(customerService.getCustomerById(testCustomer.getId())).willReturn(testCustomer);
 
     mockMvc.perform(
-            get("/api/v1/customer/" + testCustomer.getId())
+            get(API_STRING + "/" + testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isOk())
