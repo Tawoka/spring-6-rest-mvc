@@ -1,6 +1,5 @@
 package com.rmorgner.spring6restmvc.controller;
 
-import com.rmorgner.spring6restmvc.model.Beer;
 import com.rmorgner.spring6restmvc.model.Customer;
 import com.rmorgner.spring6restmvc.services.CustomerService;
 import lombok.AllArgsConstructor;
