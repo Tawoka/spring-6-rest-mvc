@@ -150,4 +150,14 @@ class BeerControllerTest {
     ;
 
   }
+
+  @Test
+  void testException() throws Exception {
+    given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+
+    mockMvc.perform(
+      get(PLACEHOLDER_API_STRING, UUID.randomUUID())
+    ).andExpect(status().isNotFound());
+  }
+
 }
