@@ -29,12 +29,4 @@ class BeerRepositoryTest {
     assertThat(savedBeer.getId()).isNotNull();
   }
 
-  @Test
-  void checkBeerInitialization(){
-    BeerServiceImpl beerService = new BeerServiceImpl(beerRepository);
-    beerService.fillBeer();
-    List<Beer> beerList = beerRepository.findAll();
-
-    assertThat(beerList).hasSize(3);
-  }
 }

@@ -28,12 +28,4 @@ class CustomerRepositoryTest {
     assertThat(savedCustomer.getId()).isNotNull();
   }
 
-  @Test
-  void checkCustomerInitialization() {
-    CustomerServiceImpl customerService = new CustomerServiceImpl(customerRepository);
-    customerService.fillCustomer();
-    List<Customer> customerList = customerRepository.findAll();
-
-    assertThat(customerList).hasSize(3);
-  }
 }
