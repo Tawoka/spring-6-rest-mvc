@@ -1,9 +1,14 @@
 package com.rmorgner.spring6restmvc.repositories;
 
+import com.rmorgner.spring6restmvc.entities.Beer;
 import com.rmorgner.spring6restmvc.entities.Customer;
+import com.rmorgner.spring6restmvc.services.BeerServiceImpl;
+import com.rmorgner.spring6restmvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,4 +28,12 @@ class CustomerRepositoryTest {
     assertThat(savedCustomer.getId()).isNotNull();
   }
 
+  @Test
+  void checkCustomerInitialization() {
+    CustomerServiceImpl customerService = new CustomerServiceImpl(customerRepository);
+    customerService.fillCustomer();
+    List<Customer> customerList = customerRepository.findAll();
+
+    assertThat(customerList).hasSize(3);
+  }
 }

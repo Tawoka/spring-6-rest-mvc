@@ -1,7 +1,10 @@
 package com.rmorgner.spring6restmvc.services;
 
+import com.rmorgner.spring6restmvc.entities.Customer;
 import com.rmorgner.spring6restmvc.model.CustomerDTO;
+import com.rmorgner.spring6restmvc.repositories.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,8 +16,16 @@ public class CustomerServiceImpl implements CustomerService {
 
   private final Map<UUID, CustomerDTO> customerMap;
 
-  public CustomerServiceImpl() {
+  private final CustomerRepository customerRepository;
 
+  @Autowired
+  public CustomerServiceImpl(CustomerRepository customerRepository) {
+    this.customerRepository = customerRepository;
+    customerMap = null;
+  }
+
+  public CustomerServiceImpl() {
+    customerRepository = null;
     customerMap = new HashMap<>();
 
     CustomerDTO customer1 = CustomerDTO.builder()
@@ -44,6 +55,36 @@ public class CustomerServiceImpl implements CustomerService {
     customerMap.put(customer1.getId(), customer1);
     customerMap.put(customer2.getId(), customer2);
     customerMap.put(customer3.getId(), customer3);
+  }
+
+  public void fillCustomer(){
+    Customer customer1 = Customer.builder()
+        .version(1)
+        .id(UUID.randomUUID())
+        .name("Micky Mouse")
+        .createdOn(LocalDateTime.now())
+        .lastUpdated(LocalDateTime.now())
+        .build();
+
+    Customer customer2 = Customer.builder()
+        .version(1)
+        .id(UUID.randomUUID())
+        .name("Bugs Bunny")
+        .createdOn(LocalDateTime.now())
+        .lastUpdated(LocalDateTime.now())
+        .build();
+
+    Customer customer3 = Customer.builder()
+        .version(1)
+        .id(UUID.randomUUID())
+        .name("Batman")
+        .createdOn(LocalDateTime.now())
+        .lastUpdated(LocalDateTime.now())
+        .build();
+
+    customerRepository.save(customer1);
+    customerRepository.save(customer2);
+    customerRepository.save(customer3);
   }
 
   @Override
