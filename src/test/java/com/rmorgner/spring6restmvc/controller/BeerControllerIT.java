@@ -7,6 +7,8 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
@@ -56,5 +58,28 @@ class BeerControllerIT {
         .isThrownBy(() -> {
           controller.getBeerById(UUID.randomUUID());
         });
+  }
+
+  @Rollback
+  @Transactional
+  @Test
+  void saveNewBeerTest() {
+
+    BeerDTO newBeer = BeerDTO.builder()
+        .name("New Beer")
+        .build();
+
+    ResponseEntity responseEntity = controller.handlePost(newBeer);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
+    assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
+
+    String path = responseEntity.getHeaders().getLocation().getPath();
+    String[] split = path.split("/");
+    UUID uuid = UUID.fromString(split[4]);
+
+    Beer beer = beerRepository.findById(uuid).get();
+    assertThat(beer).isNotNull();
+
   }
 }

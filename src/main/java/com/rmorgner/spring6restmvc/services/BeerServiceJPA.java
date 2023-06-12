@@ -1,5 +1,6 @@
 package com.rmorgner.spring6restmvc.services;
 
+import com.rmorgner.spring6restmvc.entities.Beer;
 import com.rmorgner.spring6restmvc.mappers.BeerMapper;
 import com.rmorgner.spring6restmvc.model.BeerDTO;
 import com.rmorgner.spring6restmvc.repositories.BeerRepository;
@@ -36,7 +37,9 @@ public class BeerServiceJPA implements BeerService {
 
   @Override
   public BeerDTO saveNewBeer(BeerDTO beer) {
-    return null;
+    Beer beerEntity = beerMapper.beerDtoToBeer(beer);
+    Beer savedBeer = beerRepository.save(beerEntity);
+    return beerMapper.beerToBeerDTO(savedBeer);
   }
 
   @Override
