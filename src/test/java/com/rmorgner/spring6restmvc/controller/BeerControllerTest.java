@@ -93,6 +93,9 @@ class BeerControllerTest {
 
   @Test
   void testUpdateBeer() throws Exception {
+
+    given(beerService.updateById(any(), any())).willReturn(Optional.of(testBeer));
+
     mockMvc.perform(
             put(PLACEHOLDER_API_STRING, testBeer.getId())
                 .accept(MediaType.APPLICATION_JSON)
