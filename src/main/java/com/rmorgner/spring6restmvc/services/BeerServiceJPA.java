@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,15 +45,22 @@ public class BeerServiceJPA implements BeerService {
   }
 
   @Override
-  public void updateById(UUID beerId, BeerDTO beer) {
-    beerRepository.findById(beerId).ifPresent(foundBeer -> {
+  public Optional<BeerDTO> updateById(UUID beerId, BeerDTO beer) {
+    AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
+
+    beerRepository.findById(beerId).ifPresentOrElse(foundBeer -> {
       foundBeer.setName(beer.getName());
       foundBeer.setStyle(beer.getStyle());
       foundBeer.setPrice(beer.getPrice());
       foundBeer.setUpc(beer.getUpc());
       foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
       foundBeer.setUpdateDate(LocalDateTime.now());
+      atomicReference.set(Optional.of(beerMapper.beerToBeerDTO(beerRepository.save(foundBeer))));
+    }, () -> {
+      atomicReference.set(Optional.empty());
     });
+
+    return atomicReference.get();
   }
 
   @Override

@@ -102,4 +102,12 @@ class BeerControllerIT {
     Beer updatedBeer = beerRepository.findById(beer.getId()).get();
     assertThat(updatedBeer.getName()).isEqualTo(beerName);
   }
+
+  @Test
+  void testUpdateBeerNotFound() {
+    assertThatExceptionOfType(NotFoundException.class)
+        .isThrownBy(() -> {
+          controller.updateById(UUID.randomUUID(), BeerDTO.builder().build());
+        });
+  }
 }

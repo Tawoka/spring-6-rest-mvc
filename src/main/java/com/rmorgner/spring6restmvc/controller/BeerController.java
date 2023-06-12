@@ -41,7 +41,9 @@ public class BeerController {
 
   @PutMapping(ID_PLACEHOLDER)
   public ResponseEntity updateById(@PathVariable(ID_FIELD) UUID beerId, @RequestBody BeerDTO beer){
-    beerService.updateById(beerId, beer);
+    if (beerService.updateById(beerId, beer).isEmpty()){
+      throw new NotFoundException();
+    }
 
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
