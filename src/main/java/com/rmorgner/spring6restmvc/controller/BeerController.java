@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -27,7 +28,10 @@ public class BeerController {
   @PatchMapping(ID_PLACEHOLDER)
   public ResponseEntity updateFieldsById(@PathVariable(ID_FIELD) UUID id, @RequestBody BeerDTO beer){
 
-    beerService.patchBeerById(id,beer);
+    Optional<BeerDTO> beerDTO = beerService.patchBeerById(id, beer);
+    if (beerDTO.isEmpty()){
+      throw new NotFoundException();
+    }
 
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -128,6 +129,31 @@ class BeerControllerIT {
     assertThatExceptionOfType(NotFoundException.class)
         .isThrownBy(() -> {
           controller.deleteById(UUID.randomUUID());
+        });
+  }
+
+  @Rollback
+  @Transactional
+  @Test
+  void testPatchBeer() {
+    Beer beer = beerRepository.findAll().get(0);
+
+    BeerDTO patchData = BeerDTO.builder().name("Hello World").price(new BigDecimal("69.42")).build();
+    ResponseEntity responseEntity = controller.updateFieldsById(beer.getId(), patchData);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+    Beer updatedBeer = beerRepository.findById(beer.getId()).get();
+
+    assertThat(updatedBeer.getName()).isEqualTo(patchData.getName());
+    assertThat(updatedBeer.getPrice()).isEqualTo(patchData.getPrice());
+    assertThat(updatedBeer.getStyle()).isEqualTo(beer.getStyle());
+  }
+
+  @Test
+  void testPatchBeerNotFound() {
+    assertThatExceptionOfType(NotFoundException.class)
+        .isThrownBy(() -> {
+          controller.updateFieldsById(UUID.randomUUID(), BeerDTO.builder().build());
         });
   }
 }
