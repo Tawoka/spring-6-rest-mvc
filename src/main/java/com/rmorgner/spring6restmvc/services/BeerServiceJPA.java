@@ -64,8 +64,13 @@ public class BeerServiceJPA implements BeerService {
   }
 
   @Override
-  public void deleteById(UUID beerId) {
-
+  public Boolean deleteById(UUID beerId) {
+    //Not only doesn't it matter if it exists or not, this code just reeks... top tier training
+    if (beerRepository.existsById(beerId)) {
+      beerRepository.deleteById(beerId);
+      return true;
+    }
+    return false;
   }
 
   @Override

@@ -81,6 +81,8 @@ class BeerControllerTest {
 
   @Test
   void testDeleteBeer() throws Exception {
+    given(beerService.deleteById(any())).willReturn(true);
+
     mockMvc.perform(
             delete(PLACEHOLDER_API_STRING, testBeer.getId())
                 .accept(MediaType.APPLICATION_JSON)

@@ -87,6 +87,8 @@ class BeerControllerIT {
 
   }
 
+  @Rollback
+  @Transactional
   @Test
   void updateBeerTest() {
     Beer beer = beerRepository.findAll().get(0);
@@ -108,6 +110,24 @@ class BeerControllerIT {
     assertThatExceptionOfType(NotFoundException.class)
         .isThrownBy(() -> {
           controller.updateById(UUID.randomUUID(), BeerDTO.builder().build());
+        });
+  }
+
+  @Rollback
+  @Transactional
+  @Test
+  void testDeleteBeer() {
+    Beer beer = beerRepository.findAll().get(0);
+    ResponseEntity responseEntity = controller.deleteById(beer.getId());
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+    assertThat(beerRepository.findById(beer.getId())).isEmpty();
+  }
+
+  @Test
+  void testDeletingNonExistentBeer() {
+    assertThatExceptionOfType(NotFoundException.class)
+        .isThrownBy(() -> {
+          controller.deleteById(UUID.randomUUID());
         });
   }
 }
