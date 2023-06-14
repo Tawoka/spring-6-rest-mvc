@@ -46,7 +46,7 @@ public class CustomerController {
   }
 
   @PostMapping
-  public ResponseEntity handlePost(@RequestBody CustomerDTO customer){
+  public ResponseEntity saveCustomer(@RequestBody CustomerDTO customer){
     CustomerDTO savedCustomer = customerService.saveNewCustomer(customer);
 
     HttpHeaders httpHeaders = new HttpHeaders();
