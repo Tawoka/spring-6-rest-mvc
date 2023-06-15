@@ -74,7 +74,7 @@ class BeerControllerIT {
         .name("New Beer")
         .build();
 
-    ResponseEntity responseEntity = controller.handlePost(newBeer);
+    ResponseEntity responseEntity = controller.saveNewBeer(newBeer);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
     assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
@@ -99,7 +99,7 @@ class BeerControllerIT {
     final String beerName = "UPDATED";
     beerDTO.setName(beerName);
 
-    ResponseEntity responseEntity = controller.updateById(beer.getId(), beerDTO);
+    ResponseEntity responseEntity = controller.patchBeerById(beer.getId(), beerDTO);
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
 
     Beer updatedBeer = beerRepository.findById(beer.getId()).get();
@@ -110,7 +110,7 @@ class BeerControllerIT {
   void testUpdateBeerNotFound() {
     assertThatExceptionOfType(NotFoundException.class)
         .isThrownBy(() -> {
-          controller.updateById(UUID.randomUUID(), BeerDTO.builder().build());
+          controller.patchBeerById(UUID.randomUUID(), BeerDTO.builder().build());
         });
   }
 
