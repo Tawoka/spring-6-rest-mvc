@@ -27,10 +27,10 @@ public class BeerController {
   private final BeerService beerService;
 
   @PatchMapping(ID_PLACEHOLDER)
-  public ResponseEntity updateFieldsById(@PathVariable(ID_FIELD) UUID id, @RequestBody BeerDTO beer){
+  public ResponseEntity updateFieldsById(@PathVariable(ID_FIELD) UUID id, @RequestBody BeerDTO beer) {
 
     Optional<BeerDTO> beerDTO = beerService.patchBeerById(id, beer);
-    if (beerDTO.isEmpty()){
+    if (beerDTO.isEmpty()) {
       throw new NotFoundException();
     }
 
@@ -38,8 +38,8 @@ public class BeerController {
   }
 
   @DeleteMapping(ID_PLACEHOLDER)
-  public ResponseEntity deleteById(@PathVariable(ID_FIELD) UUID beerId){
-    if (!beerService.deleteById(beerId)){
+  public ResponseEntity deleteById(@PathVariable(ID_FIELD) UUID beerId) {
+    if (!beerService.deleteById(beerId)) {
       throw new NotFoundException();
     }
 
@@ -47,8 +47,9 @@ public class BeerController {
   }
 
   @PutMapping(ID_PLACEHOLDER)
-  public ResponseEntity patchBeerById(@PathVariable(ID_FIELD) UUID beerId, @RequestBody BeerDTO beer){
-    if (beerService.updateById(beerId, beer).isEmpty()){
+  public ResponseEntity patchBeerById(@PathVariable(ID_FIELD) UUID beerId,
+                                      @Validated @RequestBody BeerDTO beer) {
+    if (beerService.updateById(beerId, beer).isEmpty()) {
       throw new NotFoundException();
     }
 
@@ -56,7 +57,7 @@ public class BeerController {
   }
 
   @PostMapping
-  public ResponseEntity saveNewBeer(@Validated @RequestBody BeerDTO beer){
+  public ResponseEntity saveNewBeer(@Validated @RequestBody BeerDTO beer) {
     BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
     HttpHeaders httpHeaders = new HttpHeaders();
@@ -66,12 +67,12 @@ public class BeerController {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public List<BeerDTO> listBeers(){
+  public List<BeerDTO> listBeers() {
     return beerService.listBeers();
   }
 
   @RequestMapping(value = ID_PLACEHOLDER, method = RequestMethod.GET)
-  public BeerDTO getBeerById(@PathVariable(ID_FIELD) UUID beerId){
+  public BeerDTO getBeerById(@PathVariable(ID_FIELD) UUID beerId) {
 
     log.debug("Get Beer by id in the controller");
 

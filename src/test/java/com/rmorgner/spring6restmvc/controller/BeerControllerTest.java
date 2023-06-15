@@ -183,9 +183,28 @@ class BeerControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.length()", is(2)))
+        .andExpect(jsonPath("$.length()", is(6)))
         .andReturn();
 
     System.out.println(mvcResult.getResponse().getContentAsString());
+  }
+
+  @Test
+  void testUpdateBeerWithNullValues() throws Exception {
+    BeerDTO beer = BeerDTO.builder().build();
+
+    given(beerService.updateById(any(), any())).willReturn(Optional.of(testBeer));
+
+    MvcResult mvcResult = mockMvc.perform(put(PLACEHOLDER_API_STRING, testBeer.getId())
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(beer))
+        )
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.length()", is(6)))
+        .andReturn();
+
+    System.out.println(mvcResult.getResponse().getContentAsString());
+
   }
 }
