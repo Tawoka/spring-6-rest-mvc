@@ -14,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -165,7 +167,7 @@ class BeerControllerTest {
     given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
 
     mockMvc.perform(
-      get(PLACEHOLDER_API_STRING, UUID.randomUUID())
+        get(PLACEHOLDER_API_STRING, UUID.randomUUID())
     ).andExpect(status().isNotFound());
   }
 
@@ -175,10 +177,15 @@ class BeerControllerTest {
 
     given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
 
-    mockMvc.perform(post(API_STRING)
-        .accept(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(beer))
-        .contentType(MediaType.APPLICATION_JSON)
-    ).andExpect(status().isBadRequest());
+    MvcResult mvcResult = mockMvc.perform(post(API_STRING)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(beer))
+            .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.length()", is(2)))
+        .andReturn();
+
+    System.out.println(mvcResult.getResponse().getContentAsString());
   }
 }
