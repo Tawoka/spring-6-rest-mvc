@@ -2,6 +2,8 @@ package com.rmorgner.spring6restmvc.entities;
 
 import com.rmorgner.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UuidGenerator;
@@ -25,11 +27,21 @@ public class Beer {
   private UUID id;
   @Version
   private Integer version;
+
+  @NotBlank
+  @NotNull
   private String name;
+
+  @NotNull
   private BeerStyle style;
+
+  @NotBlank
+  @NotNull
   private String upc;
-  private Integer quantityOnHand;
+
+  @NotNull
   private BigDecimal price;
+  private Integer quantityOnHand;
   private LocalDateTime createDate;
   private LocalDateTime updateDate;
 
