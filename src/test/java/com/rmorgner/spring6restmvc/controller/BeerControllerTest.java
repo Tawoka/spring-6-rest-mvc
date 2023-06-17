@@ -46,8 +46,8 @@ class BeerControllerTest {
 
   BeerDTO testBeer;
 
-  String API_STRING = "/api/v1/beer";
-  String PLACEHOLDER_API_STRING = API_STRING + "/{beerId}";
+  static final String API_STRING = "/api/v1/beer";
+  static final String PLACEHOLDER_API_STRING = API_STRING + "/{beerId}";
 
   @BeforeEach
   void setUp() {
