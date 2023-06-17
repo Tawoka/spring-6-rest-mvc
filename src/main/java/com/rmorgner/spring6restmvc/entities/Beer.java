@@ -4,8 +4,8 @@ import com.rmorgner.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
@@ -30,6 +30,8 @@ public class Beer {
 
   @NotBlank
   @NotNull
+  @Size(max = 50)
+  @Column(length = 50)
   private String name;
 
   @NotNull
@@ -37,6 +39,7 @@ public class Beer {
 
   @NotBlank
   @NotNull
+  @Size(max = 255)
   private String upc;
 
   @NotNull

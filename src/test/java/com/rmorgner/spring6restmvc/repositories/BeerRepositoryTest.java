@@ -6,6 +6,7 @@ import com.rmorgner.spring6restmvc.model.BeerStyle;
 import com.rmorgner.spring6restmvc.services.BeerService;
 import com.rmorgner.spring6restmvc.services.BeerServiceImpl;
 import com.rmorgner.spring6restmvc.utils.TestDataInitializer;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DataJpaTest
 class BeerRepositoryTest {
@@ -38,4 +40,19 @@ class BeerRepositoryTest {
     assertThat(savedBeer.getId()).isNotNull();
   }
 
+  @Test
+  void beerTooLong() {
+    assertThatExceptionOfType(ConstraintViolationException.class)
+        .isThrownBy(() -> {
+          beerRepository.save(
+              Beer.builder()
+                  .name("My Beer ---------------------------------------------------------------------------")
+                  .style(BeerStyle.PALE_ALE)
+                  .upc("123456")
+                  .price(new BigDecimal("42.69"))
+                  .build()
+          );
+          beerRepository.flush();
+        });
+  }
 }
