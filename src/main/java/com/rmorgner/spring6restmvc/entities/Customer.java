@@ -28,8 +28,13 @@ public class Customer {
   @Version
   private Integer version;
   @NotBlank
+
   @NotNull
   private String name;
+
+  @Column(length = 255)
+  private String email;
+
   private LocalDateTime createdOn;
   private LocalDateTime lastUpdated;
 
