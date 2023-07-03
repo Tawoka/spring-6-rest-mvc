@@ -38,6 +38,7 @@ public class Beer {
   private String name;
 
   @NotNull
+  @Column(columnDefinition = "smallint")
   private BeerStyle style;
 
   @NotBlank
