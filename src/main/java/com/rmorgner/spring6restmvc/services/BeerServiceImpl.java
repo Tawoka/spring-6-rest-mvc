@@ -26,8 +26,6 @@ public class BeerServiceImpl implements BeerService {
         .upc("123456")
         .price(new BigDecimal("12.99"))
         .quantityOnHand(122)
-        .createDate(LocalDateTime.now())
-        .updateDate(LocalDateTime.now())
         .build();
 
     BeerDTO beer2 = BeerDTO.builder()
@@ -38,8 +36,6 @@ public class BeerServiceImpl implements BeerService {
         .upc("765198")
         .price(new BigDecimal("10.99"))
         .quantityOnHand(509)
-        .createDate(LocalDateTime.now())
-        .updateDate(LocalDateTime.now())
         .build();
 
     BeerDTO beer3 = BeerDTO.builder()
@@ -50,8 +46,6 @@ public class BeerServiceImpl implements BeerService {
         .upc("349724")
         .price(new BigDecimal("15.99"))
         .quantityOnHand(1042)
-        .createDate(LocalDateTime.now())
-        .updateDate(LocalDateTime.now())
         .build();
 
     beerMap.put(beer1.getId(), beer1);
@@ -77,8 +71,6 @@ public class BeerServiceImpl implements BeerService {
     BeerDTO savedBeer = BeerDTO.builder()
         .id(UUID.randomUUID())
         .version(1)
-        .createDate(LocalDateTime.now())
-        .updateDate(LocalDateTime.now())
         .name(beer.getName())
         .style(beer.getStyle())
         .price(beer.getPrice())
@@ -97,7 +89,6 @@ public class BeerServiceImpl implements BeerService {
     currentBeer.setPrice(beer.getPrice());
     currentBeer.setUpc(beer.getUpc());
     currentBeer.setQuantityOnHand(beer.getQuantityOnHand());
-    currentBeer.setUpdateDate(LocalDateTime.now());
     beerMap.put(beerId, currentBeer);
     return Optional.of(currentBeer);
   }
@@ -116,7 +107,6 @@ public class BeerServiceImpl implements BeerService {
     if (beer.getPrice() != null) currentBeer.setPrice(beer.getPrice());
     if (beer.getUpc() != null) currentBeer.setUpc(beer.getUpc());
     if (beer.getQuantityOnHand() != null) currentBeer.setQuantityOnHand(beer.getQuantityOnHand());
-    currentBeer.setUpdateDate(LocalDateTime.now());
     beerMap.put(id, currentBeer);
     return Optional.of(currentBeer);
   }

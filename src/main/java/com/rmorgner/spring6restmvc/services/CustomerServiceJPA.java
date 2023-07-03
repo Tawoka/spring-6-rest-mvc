@@ -52,7 +52,6 @@ public class CustomerServiceJPA implements CustomerService {
 
     Customer entity = optionalCustomer.get();
     entity.setName(customer.getName());
-    entity.setLastUpdated(LocalDateTime.now());
     customerRepository.save(entity);
 
   }
@@ -72,7 +71,6 @@ public class CustomerServiceJPA implements CustomerService {
 
     Customer entity = optionalCustomer.get();
     if (customer.getName() != null) entity.setName(customer.getName());
-    entity.setLastUpdated(LocalDateTime.now());
     customerRepository.save(entity);
   }
 }

@@ -54,7 +54,6 @@ public class BeerServiceJPA implements BeerService {
       foundBeer.setPrice(beer.getPrice());
       foundBeer.setUpc(beer.getUpc());
       foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
-      foundBeer.setUpdateDate(LocalDateTime.now());
       atomicReference.set(Optional.of(beerMapper.beerToBeerDTO(beerRepository.save(foundBeer))));
     }, () -> {
       atomicReference.set(Optional.empty());
@@ -85,7 +84,6 @@ public class BeerServiceJPA implements BeerService {
     if (beer.getQuantityOnHand() != null) foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
     if (beer.getPrice() != null) foundBeer.setPrice(beer.getPrice());
     if (beer.getUpc() != null) foundBeer.setUpc(beer.getUpc());
-    foundBeer.setUpdateDate(LocalDateTime.now());
     Beer savedBeer = beerRepository.save(foundBeer);
     return Optional.of(beerMapper.beerToBeerDTO(savedBeer));
   }

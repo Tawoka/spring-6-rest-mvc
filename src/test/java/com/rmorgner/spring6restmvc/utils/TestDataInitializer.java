@@ -33,8 +33,6 @@ public class TestDataInitializer {
         .upc("123456")
         .price(new BigDecimal("12.99"))
         .quantityOnHand(122)
-        .createDate(LocalDateTime.now())
-        .updateDate(LocalDateTime.now())
         .build();
 
     Beer beer2 = Beer.builder()
@@ -43,8 +41,6 @@ public class TestDataInitializer {
         .upc("765198")
         .price(new BigDecimal("10.99"))
         .quantityOnHand(509)
-        .createDate(LocalDateTime.now())
-        .updateDate(LocalDateTime.now())
         .build();
 
     Beer beer3 = Beer.builder()
@@ -53,8 +49,6 @@ public class TestDataInitializer {
         .upc("349724")
         .price(new BigDecimal("15.99"))
         .quantityOnHand(1042)
-        .createDate(LocalDateTime.now())
-        .updateDate(LocalDateTime.now())
         .build();
 
     beerRepository.save(beer1);
@@ -67,24 +61,18 @@ public class TestDataInitializer {
         .version(1)
         .id(UUID.randomUUID())
         .name("Micky Mouse")
-        .createdOn(LocalDateTime.now())
-        .lastUpdated(LocalDateTime.now())
         .build();
 
     Customer customer2 = Customer.builder()
         .version(1)
         .id(UUID.randomUUID())
         .name("Bugs Bunny")
-        .createdOn(LocalDateTime.now())
-        .lastUpdated(LocalDateTime.now())
         .build();
 
     Customer customer3 = Customer.builder()
         .version(1)
         .id(UUID.randomUUID())
         .name("Batman")
-        .createdOn(LocalDateTime.now())
-        .lastUpdated(LocalDateTime.now())
         .build();
 
     customerRepository.save(customer1);

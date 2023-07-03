@@ -23,24 +23,18 @@ public class CustomerServiceImpl implements CustomerService {
         .version(1)
         .id(UUID.randomUUID())
         .name("Micky Mouse")
-        .createdOn(LocalDateTime.now())
-        .lastUpdated(LocalDateTime.now())
         .build();
 
     CustomerDTO customer2 = CustomerDTO.builder()
         .version(1)
         .id(UUID.randomUUID())
         .name("Bugs Bunny")
-        .createdOn(LocalDateTime.now())
-        .lastUpdated(LocalDateTime.now())
         .build();
 
     CustomerDTO customer3 = CustomerDTO.builder()
         .version(1)
         .id(UUID.randomUUID())
         .name("Batman")
-        .createdOn(LocalDateTime.now())
-        .lastUpdated(LocalDateTime.now())
         .build();
 
     customerMap.put(customer1.getId(), customer1);
@@ -64,8 +58,6 @@ public class CustomerServiceImpl implements CustomerService {
     CustomerDTO savedCustomer = CustomerDTO.builder()
         .id(UUID.randomUUID())
         .version(1)
-        .createdOn(LocalDateTime.now())
-        .lastUpdated(LocalDateTime.now())
         .name(customer.getName())
         .build();
 
@@ -78,7 +70,6 @@ public class CustomerServiceImpl implements CustomerService {
   public void updateCustomer(UUID id, CustomerDTO customer) {
     CustomerDTO currentCustomer = customerMap.get(id);
     currentCustomer.setName(customer.getName());
-    currentCustomer.setLastUpdated(LocalDateTime.now());
     customerMap.put(id, currentCustomer);
   }
 
@@ -91,7 +82,6 @@ public class CustomerServiceImpl implements CustomerService {
   public void patchById(UUID id, CustomerDTO customer) {
     CustomerDTO currentCustomer = customerMap.get(id);
     if (customer.getName() != null) currentCustomer.setName(customer.getName());
-    currentCustomer.setLastUpdated(LocalDateTime.now());
     customerMap.put(id, currentCustomer);
   }
 
