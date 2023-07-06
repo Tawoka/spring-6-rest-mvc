@@ -2,6 +2,7 @@ package com.rmorgner.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rmorgner.spring6restmvc.model.BeerDTO;
+import com.rmorgner.spring6restmvc.model.BeerStyle;
 import com.rmorgner.spring6restmvc.services.BeerService;
 import com.rmorgner.spring6restmvc.services.BeerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +51,7 @@ class BeerControllerTest {
   @BeforeEach
   void setUp() {
     beerServiceImpl = new BeerServiceImpl();
-    testBeer = beerServiceImpl.listBeers("").get(0);
+    testBeer = beerServiceImpl.listBeers("", BeerStyle.PALE_ALE).get(0);
   }
 
   @Captor
@@ -118,7 +119,7 @@ class BeerControllerTest {
     testBeer.setVersion(null);
     testBeer.setId(null);
 
-    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers("").get(1));
+    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
 
     mockMvc.perform(post(API_STRING)
             .accept(MediaType.APPLICATION_JSON)
@@ -132,7 +133,7 @@ class BeerControllerTest {
 
   @Test
   void getBeerList() throws Exception {
-    given(beerService.listBeers(any())).willReturn(beerServiceImpl.listBeers(""));
+    given(beerService.listBeers(any(), any())).willReturn(beerServiceImpl.listBeers());
 
     mockMvc.perform(
             get(API_STRING).accept(MediaType.APPLICATION_JSON)
@@ -173,7 +174,7 @@ class BeerControllerTest {
   void testCreatedNullBeer() throws Exception {
     BeerDTO beer = BeerDTO.builder().build();
 
-    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers("").get(1));
+    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
 
     MvcResult mvcResult = mockMvc.perform(post(API_STRING)
             .accept(MediaType.APPLICATION_JSON)

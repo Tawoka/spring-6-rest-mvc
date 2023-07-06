@@ -1,6 +1,7 @@
 package com.rmorgner.spring6restmvc.controller;
 
 import com.rmorgner.spring6restmvc.model.BeerDTO;
+import com.rmorgner.spring6restmvc.model.BeerStyle;
 import com.rmorgner.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,8 +68,9 @@ public class BeerController {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public List<BeerDTO> listBeers(@RequestParam(required = false) String name) {
-    return beerService.listBeers(name);
+  public List<BeerDTO> listBeers(@RequestParam(required = false) String name,
+                                 @RequestParam(required = false) BeerStyle style) {
+    return beerService.listBeers(name, style);
   }
 
   @RequestMapping(value = ID_PLACEHOLDER, method = RequestMethod.GET)

@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rmorgner.spring6restmvc.entities.Beer;
 import com.rmorgner.spring6restmvc.mappers.BeerMapper;
 import com.rmorgner.spring6restmvc.model.BeerDTO;
+import com.rmorgner.spring6restmvc.model.BeerStyle;
 import com.rmorgner.spring6restmvc.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
+import org.apiguardian.api.API;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,10 +66,18 @@ class BeerControllerIT {
   @Test
   void testListBeersByName() throws Exception {
     mockMvc.perform(get(API_STRING)
-        .queryParam("name", "IPA")
+            .queryParam("name", "IPA")
         )
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.size()", is(336)));
+  }
+
+  @Test
+  void testListBeersByStyle() throws Exception {
+    mockMvc.perform(get(API_STRING)
+            .queryParam("style", "STOUT")
+        ).andExpect(status().isOk())
+        .andExpect(jsonPath("$.size()", is(58)));
   }
 
   @Test
@@ -93,7 +103,7 @@ class BeerControllerIT {
 
   @Test
   void testListBeers() {
-    List<BeerDTO> beerList = controller.listBeers("");
+    List<BeerDTO> beerList = controller.listBeers("", null);
 
     assertThat(beerList).hasSize(2413);
   }
@@ -103,7 +113,7 @@ class BeerControllerIT {
   @Test
   void testEmptyBeerList() {
     beerRepository.deleteAll();
-    List<BeerDTO> beerList = controller.listBeers("");
+    List<BeerDTO> beerList = controller.listBeers("", null);
 
     assertThat(beerList).hasSize(0);
   }
