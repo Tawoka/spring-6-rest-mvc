@@ -1,6 +1,5 @@
 package com.rmorgner.spring6restmvc.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rmorgner.spring6restmvc.model.BeerDTO;
 import com.rmorgner.spring6restmvc.services.BeerService;
@@ -15,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +50,7 @@ class BeerControllerTest {
   @BeforeEach
   void setUp() {
     beerServiceImpl = new BeerServiceImpl();
-    testBeer = beerServiceImpl.listBeers().get(0);
+    testBeer = beerServiceImpl.listBeers("").get(0);
   }
 
   @Captor
@@ -120,7 +118,7 @@ class BeerControllerTest {
     testBeer.setVersion(null);
     testBeer.setId(null);
 
-    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
+    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers("").get(1));
 
     mockMvc.perform(post(API_STRING)
             .accept(MediaType.APPLICATION_JSON)
@@ -134,7 +132,7 @@ class BeerControllerTest {
 
   @Test
   void getBeerList() throws Exception {
-    given(beerService.listBeers()).willReturn(beerServiceImpl.listBeers());
+    given(beerService.listBeers(any())).willReturn(beerServiceImpl.listBeers(""));
 
     mockMvc.perform(
             get(API_STRING).accept(MediaType.APPLICATION_JSON)
@@ -175,7 +173,7 @@ class BeerControllerTest {
   void testCreatedNullBeer() throws Exception {
     BeerDTO beer = BeerDTO.builder().build();
 
-    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
+    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers("").get(1));
 
     MvcResult mvcResult = mockMvc.perform(post(API_STRING)
             .accept(MediaType.APPLICATION_JSON)

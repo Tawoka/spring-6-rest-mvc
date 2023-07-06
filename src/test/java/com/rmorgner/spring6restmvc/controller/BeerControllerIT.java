@@ -28,6 +28,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.core.Is.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,6 +62,15 @@ class BeerControllerIT {
   }
 
   @Test
+  void testListBeersByName() throws Exception {
+    mockMvc.perform(get(API_STRING)
+        .queryParam("name", "IPA")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.size()", is(336)));
+  }
+
+  @Test
   void testPatchBeerBadName() throws Exception {
     Beer testBeer = beerRepository.findAll().get(0);
 
@@ -83,7 +93,7 @@ class BeerControllerIT {
 
   @Test
   void testListBeers() {
-    List<BeerDTO> beerList = controller.listBeers();
+    List<BeerDTO> beerList = controller.listBeers("");
 
     assertThat(beerList).hasSize(2413);
   }
@@ -93,7 +103,7 @@ class BeerControllerIT {
   @Test
   void testEmptyBeerList() {
     beerRepository.deleteAll();
-    List<BeerDTO> beerList = controller.listBeers();
+    List<BeerDTO> beerList = controller.listBeers("");
 
     assertThat(beerList).hasSize(0);
   }

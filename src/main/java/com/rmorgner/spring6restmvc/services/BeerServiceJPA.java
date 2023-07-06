@@ -7,8 +7,8 @@ import com.rmorgner.spring6restmvc.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,12 +24,23 @@ public class BeerServiceJPA implements BeerService {
   private final BeerMapper beerMapper;
 
   @Override
-  public List<BeerDTO> listBeers() {
-    return beerRepository
-        .findAll()
-        .stream()
+  public List<BeerDTO> listBeers(String name) {
+
+    List<Beer> beerList;
+
+    if (StringUtils.hasText(name)) {
+      beerList = listBeerByName(name);
+    } else {
+      beerList = beerRepository.findAll();
+    }
+
+    return beerList.stream()
         .map(beerMapper::beerToBeerDTO)
         .collect(Collectors.toList());
+  }
+
+  private List<Beer> listBeerByName(String name) {
+    return beerRepository.findAllByNameIsLikeIgnoreCase("%" + name + "%");
   }
 
   @Override

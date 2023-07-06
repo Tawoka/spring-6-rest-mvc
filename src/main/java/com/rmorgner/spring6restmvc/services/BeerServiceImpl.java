@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -54,7 +53,7 @@ public class BeerServiceImpl implements BeerService {
   }
 
   @Override
-  public List<BeerDTO> listBeers() {
+  public List<BeerDTO> listBeers(String name) {
     return new ArrayList<>(beerMap.values());
   }
 
