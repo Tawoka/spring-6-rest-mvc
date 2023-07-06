@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rmorgner.spring6restmvc.entities.Beer;
 import com.rmorgner.spring6restmvc.mappers.BeerMapper;
 import com.rmorgner.spring6restmvc.model.BeerDTO;
-import com.rmorgner.spring6restmvc.model.BeerStyle;
 import com.rmorgner.spring6restmvc.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
-import org.apiguardian.api.API;
+import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +63,40 @@ class BeerControllerIT {
   }
 
   @Test
+  void testListBeersByNameAndStyle() throws Exception {
+    mockMvc.perform(get(API_STRING)
+            .queryParam("name", "IPA")
+            .queryParam("style", "IPA")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.size()", is(310)));
+  }
+
+  @Test
+  void testListBeerByNameAndStyleShowInventoryFalse() throws Exception {
+    mockMvc.perform(get(API_STRING)
+            .queryParam("name", "IPA")
+            .queryParam("style", "IPA")
+            .queryParam("showInventory", "false")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.size()", is(310)))
+        .andExpect(jsonPath("$[0].quantityOnHand").value(IsNull.nullValue()));
+  }
+
+  @Test
+  void testListBeerByNameAndStyleShowInventoryTrue() throws Exception {
+    mockMvc.perform(get(API_STRING)
+            .queryParam("name", "IPA")
+            .queryParam("style", "IPA")
+            .queryParam("showInventory", "true")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.size()", is(310)))
+        .andExpect(jsonPath("$[0].quantityOnHand").value(IsNull.notNullValue()));
+  }
+
+  @Test
   void testListBeersByName() throws Exception {
     mockMvc.perform(get(API_STRING)
             .queryParam("name", "IPA")
@@ -103,7 +136,7 @@ class BeerControllerIT {
 
   @Test
   void testListBeers() {
-    List<BeerDTO> beerList = controller.listBeers("", null);
+    List<BeerDTO> beerList = controller.listBeers("", null, false);
 
     assertThat(beerList).hasSize(2413);
   }
@@ -113,7 +146,7 @@ class BeerControllerIT {
   @Test
   void testEmptyBeerList() {
     beerRepository.deleteAll();
-    List<BeerDTO> beerList = controller.listBeers("", null);
+    List<BeerDTO> beerList = controller.listBeers("", null, false);
 
     assertThat(beerList).hasSize(0);
   }

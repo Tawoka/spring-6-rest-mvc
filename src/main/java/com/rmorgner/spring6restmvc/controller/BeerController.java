@@ -69,8 +69,9 @@ public class BeerController {
 
   @RequestMapping(method = RequestMethod.GET)
   public List<BeerDTO> listBeers(@RequestParam(required = false) String name,
-                                 @RequestParam(required = false) BeerStyle style) {
-    return beerService.listBeers(name, style);
+                                 @RequestParam(required = false) BeerStyle style,
+                                 @RequestParam(required = false) Boolean showInventory) {
+    return beerService.listBeers(name, style, showInventory);
   }
 
   @RequestMapping(value = ID_PLACEHOLDER, method = RequestMethod.GET)
