@@ -1,3 +1,6 @@
+drop table if exists beer_order;
+drop table if exists beer_order_line;
+
 create table beer_order
 (
     id           VARCHAR(36) NOT NULL,
@@ -9,7 +12,7 @@ create table beer_order
     primary key (id),
     constraint customer_relation
         foreign key (customer_id) references customer (id)
-);
+) ENGINE = InnoDB;
 
 create table beer_order_line
 (
@@ -26,4 +29,4 @@ create table beer_order_line
         foreign key (beer_id) references beer (id),
     constraint beer_order_relation
         foreign key (beer_order_id) references beer_order(id)
-)
+) ENGINE = InnoDB;

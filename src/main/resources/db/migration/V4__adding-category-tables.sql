@@ -1,3 +1,6 @@
+drop table if exists category;
+drop table if exists beer_category;
+
 create table category
 (
     id          varchar(36) not null primary key,
