@@ -51,7 +51,7 @@ class BeerControllerTest {
   @BeforeEach
   void setUp() {
     beerServiceImpl = new BeerServiceImpl();
-    testBeer = beerServiceImpl.listBeers().get(0);
+    testBeer = beerServiceImpl.listBeers().getContent().get(0);
   }
 
   @Captor
@@ -119,7 +119,8 @@ class BeerControllerTest {
     testBeer.setVersion(null);
     testBeer.setId(null);
 
-    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
+    given(beerService.saveNewBeer(any(BeerDTO.class)))
+        .willReturn(beerServiceImpl.listBeers().getContent().get(1));
 
     mockMvc.perform(post(API_STRING)
             .accept(MediaType.APPLICATION_JSON)
@@ -140,7 +141,7 @@ class BeerControllerTest {
         )
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.length()", is(3)))
+        .andExpect(jsonPath("$.content.length()", is(3)))
     ;
   }
 
@@ -174,7 +175,8 @@ class BeerControllerTest {
   void testCreatedNullBeer() throws Exception {
     BeerDTO beer = BeerDTO.builder().build();
 
-    given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
+    given(beerService.saveNewBeer(any(BeerDTO.class)))
+        .willReturn(beerServiceImpl.listBeers().getContent().get(1));
 
     MvcResult mvcResult = mockMvc.perform(post(API_STRING)
             .accept(MediaType.APPLICATION_JSON)

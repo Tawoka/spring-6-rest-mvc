@@ -5,13 +5,13 @@ import com.rmorgner.spring6restmvc.model.BeerStyle;
 import com.rmorgner.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -68,7 +68,7 @@ public class BeerController {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public List<BeerDTO> listBeers(@RequestParam(required = false) String name,
+  public Page<BeerDTO> listBeers(@RequestParam(required = false) String name,
                                  @RequestParam(required = false) BeerStyle style,
                                  @RequestParam(required = false) Boolean showInventory,
                                  @RequestParam(required = false) Integer page,

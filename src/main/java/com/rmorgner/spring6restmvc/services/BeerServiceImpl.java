@@ -3,6 +3,8 @@ package com.rmorgner.spring6restmvc.services;
 import com.rmorgner.spring6restmvc.model.BeerDTO;
 import com.rmorgner.spring6restmvc.model.BeerStyle;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -53,12 +55,12 @@ public class BeerServiceImpl implements BeerService {
   }
 
   @Override
-  public List<BeerDTO> listBeers() {
-    return new ArrayList<>(beerMap.values());
+  public Page<BeerDTO> listBeers() {
+    return new PageImpl<>(new ArrayList<>(beerMap.values()));
   }
 
   @Override
-  public List<BeerDTO> listBeers(String name, BeerStyle style, Boolean showInventory, Integer page, Integer pageSize) {
+  public Page<BeerDTO> listBeers(String name, BeerStyle style, Boolean showInventory, Integer page, Integer pageSize) {
     return listBeers();
   }
 
