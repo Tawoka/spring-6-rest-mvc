@@ -1,9 +1,6 @@
 package com.rmorgner.spring6restmvc.repositories;
 
-import com.rmorgner.spring6restmvc.entities.Beer;
-import com.rmorgner.spring6restmvc.entities.BeerOrder;
-import com.rmorgner.spring6restmvc.entities.BeerOrderLine;
-import com.rmorgner.spring6restmvc.entities.Customer;
+import com.rmorgner.spring6restmvc.entities.*;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,9 +31,14 @@ class BeerOrderRepositoryTest {
   @Transactional
   @Test
   void testBeerOrders() {
+    BeerOrderShipment shipment = BeerOrderShipment.builder()
+        .trackingNumber("12345numberThingy")
+        .build();
+
     BeerOrder testOrder = BeerOrder.builder()
         .customerRef("Test Order")
         .customer(testCustomer)
+        .beerOrderShipment(shipment)
         .build();
 
     BeerOrder savedBeerOrder = beerOrderRepository.save(testOrder);
