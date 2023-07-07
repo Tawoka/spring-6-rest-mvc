@@ -1,8 +1,6 @@
 package com.rmorgner.spring6restmvc.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -11,7 +9,6 @@ import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -20,7 +17,7 @@ import java.util.UUID;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
+public class BeerOrderLine {
 
   @Id
   @UuidGenerator(style = UuidGenerator.Style.TIME)
@@ -28,23 +25,19 @@ public class Customer {
   @JdbcTypeCode(SqlTypes.CHAR)
   @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
   private UUID id;
-  @Version
-  private Integer version;
-  @NotBlank
-
-  @NotNull
-  private String name;
-
-  @Column(length = 255)
-  private String email;
 
   @CreationTimestamp
-  private LocalDateTime createdOn;
+  @Column(updatable = false)
+  private LocalDateTime createDate;
 
   @UpdateTimestamp
-  private LocalDateTime lastUpdated;
+  private LocalDateTime updateDate;
 
-  @OneToMany(mappedBy = "customer")
-  private Set<BeerOrder> beerOrders;
+  @Version
+  private Long version;
+
+  private Integer order_quantity;
+
+  private Integer allocated_quantity;
 
 }
