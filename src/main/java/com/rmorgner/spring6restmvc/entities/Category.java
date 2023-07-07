@@ -1,10 +1,6 @@
 package com.rmorgner.spring6restmvc.entities;
 
-import com.rmorgner.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -12,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -23,7 +18,7 @@ import java.util.UUID;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Beer {
+public class Category {
 
   @Id
   @UuidGenerator(style = UuidGenerator.Style.TIME)
@@ -31,41 +26,23 @@ public class Beer {
   @JdbcTypeCode(SqlTypes.CHAR)
   @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
   private UUID id;
+
   @Version
-  private Integer version;
-
-  @NotBlank
-  @NotNull
-  @Size(max = 50)
-  @Column(length = 50)
-  private String name;
-
-  @NotNull
-  @Column(columnDefinition = "smallint")
-  private BeerStyle style;
-
-  @NotBlank
-  @NotNull
-  @Size(max = 255)
-  private String upc;
-
-  @NotNull
-  private BigDecimal price;
-  private Integer quantityOnHand;
+  private Long version;
 
   @CreationTimestamp
+  @Column(updatable = false)
   private LocalDateTime createDate;
 
   @UpdateTimestamp
   private LocalDateTime updateDate;
 
-  @OneToMany(mappedBy = "beer")
-  private Set<BeerOrderLine> beerOrderLines;
+  private String description;
 
   @ManyToMany
   @JoinTable(name = "beer_category",
-      joinColumns = @JoinColumn(name = "beer_id"),
-      inverseJoinColumns = @JoinColumn(name = "category_id"))
-  private Set<Category> categories;
+      joinColumns = @JoinColumn(name = "category_id"),
+      inverseJoinColumns = @JoinColumn(name = "beer_id"))
+  private Set<Beer> beers;
 
 }
