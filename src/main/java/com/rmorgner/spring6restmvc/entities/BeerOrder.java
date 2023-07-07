@@ -16,9 +16,19 @@ import java.util.UUID;
 @Setter
 @Builder
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 public class BeerOrder {
+
+  public BeerOrder(UUID id, Long version, LocalDateTime createDate, LocalDateTime updateDate, String customerRef,
+                   Customer customer, Set<BeerOrderLine> lines) {
+    this.id = id;
+    this.version = version;
+    this.createDate = createDate;
+    this.updateDate = updateDate;
+    this.customerRef = customerRef;
+    this.setCustomer(customer);
+    this.lines = lines;
+  }
 
   @Id
   @UuidGenerator(style = UuidGenerator.Style.TIME)
@@ -45,8 +55,13 @@ public class BeerOrder {
   @OneToMany(mappedBy = "beerOrder")
   private Set<BeerOrderLine> lines;
 
-  public boolean isNew(){
+  public boolean isNew() {
     return id == null;
+  }
+
+  public void setCustomer(Customer customer) {
+    this.customer = customer;
+    customer.getBeerOrders().add(this);
   }
 
 }
