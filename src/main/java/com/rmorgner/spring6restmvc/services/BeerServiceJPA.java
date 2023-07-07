@@ -7,6 +7,7 @@ import com.rmorgner.spring6restmvc.model.BeerStyle;
 import com.rmorgner.spring6restmvc.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -24,6 +25,9 @@ public class BeerServiceJPA implements BeerService {
   private final BeerRepository beerRepository;
   private final BeerMapper beerMapper;
 
+  private static final int DEFAULT_PAGE = 0;
+  private static final int DEFAULT_PAGE_SIZE = 25;
+  private static final int MAXIMUM_PAGE_SIZE = 1000;
 
   @Override
   public List<BeerDTO> listBeers() {
@@ -34,7 +38,9 @@ public class BeerServiceJPA implements BeerService {
   }
 
   @Override
-  public List<BeerDTO> listBeers(String name, BeerStyle style, Boolean showInventory) {
+  public List<BeerDTO> listBeers(String name, BeerStyle style, Boolean showInventory,
+                                 Integer page, Integer pageSize) {
+    PageRequest pageRequest = buildPageRequest(page, pageSize);
 
     List<Beer> beerList;
 
@@ -55,6 +61,15 @@ public class BeerServiceJPA implements BeerService {
     return beerList.stream()
         .map(beerMapper::beerToBeerDTO)
         .collect(Collectors.toList());
+  }
+
+  private PageRequest buildPageRequest(Integer page, Integer pageSize){
+    int queryPageNumber = page != null && page > 0 ? page - 1 : DEFAULT_PAGE;
+    int queryPageSize = pageSize != null ? pageSize : DEFAULT_PAGE_SIZE;
+    if (queryPageSize > MAXIMUM_PAGE_SIZE){
+      queryPageSize = MAXIMUM_PAGE_SIZE;
+    }
+    return PageRequest.of(queryPageNumber, queryPageSize);
   }
 
   private List<Beer> listBeerByNameAndStyle(String name, BeerStyle style){

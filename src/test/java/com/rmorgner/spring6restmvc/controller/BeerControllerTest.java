@@ -51,7 +51,7 @@ class BeerControllerTest {
   @BeforeEach
   void setUp() {
     beerServiceImpl = new BeerServiceImpl();
-    testBeer = beerServiceImpl.listBeers("", BeerStyle.PALE_ALE, false).get(0);
+    testBeer = beerServiceImpl.listBeers().get(0);
   }
 
   @Captor
@@ -133,7 +133,7 @@ class BeerControllerTest {
 
   @Test
   void getBeerList() throws Exception {
-    given(beerService.listBeers(any(), any(), any())).willReturn(beerServiceImpl.listBeers());
+    given(beerService.listBeers(any(), any(), any(), any(), any())).willReturn(beerServiceImpl.listBeers());
 
     mockMvc.perform(
             get(API_STRING).accept(MediaType.APPLICATION_JSON)
