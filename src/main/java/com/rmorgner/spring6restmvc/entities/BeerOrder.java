@@ -9,6 +9,7 @@ import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -40,6 +41,9 @@ public class BeerOrder {
 
   @ManyToOne
   private Customer customer;
+
+  @OneToMany(mappedBy = "beerOrder")
+  private Set<BeerOrderLine> lines;
 
   public boolean isNew(){
     return id == null;

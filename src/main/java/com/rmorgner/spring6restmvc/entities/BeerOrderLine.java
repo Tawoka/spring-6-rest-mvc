@@ -40,4 +40,10 @@ public class BeerOrderLine {
 
   private Integer allocated_quantity;
 
+  @ManyToOne
+  private Beer beer;
+
+  @ManyToOne
+  private BeerOrder beerOrder;
+
 }
