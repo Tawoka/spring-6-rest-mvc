@@ -67,6 +67,7 @@ public class BeerController {
     return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
   }
 
+  //TODO replace Page with a List for easier consumption (after the course)
   @RequestMapping(method = RequestMethod.GET)
   public Page<BeerDTO> listBeers(@RequestParam(required = false) String name,
                                  @RequestParam(required = false) BeerStyle style,
