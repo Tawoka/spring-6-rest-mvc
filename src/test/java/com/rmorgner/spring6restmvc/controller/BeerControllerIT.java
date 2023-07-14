@@ -9,7 +9,7 @@ import jakarta.transaction.Transactional;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatusCode;
@@ -30,6 +30,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.core.Is.is;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,6 +55,12 @@ class BeerControllerIT {
   @Autowired
   ObjectMapper objectMapper;
 
+  @Value("${spring.security.user.name}")
+  String username;
+
+  @Value("${spring.security.user.password}")
+  String password;
+
   MockMvc mockMvc;
 
   static final String API_STRING = "/api/v1/beer";
@@ -60,12 +68,26 @@ class BeerControllerIT {
 
   @BeforeEach
   void setUp() {
-    mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+    mockMvc = MockMvcBuilders
+        .webAppContextSetup(wac)
+        .apply(springSecurity())
+        .build();
+  }
+
+  @Test
+  void invalidAuthentication() throws Exception {
+    mockMvc.perform(get(API_STRING)
+        .with(httpBasic(username, password + "100%totallyWrongPassword!"))
+        .queryParam("name", "IPA")
+        .queryParam("style", "IPA")
+    )
+        .andExpect(status().isUnauthorized());
   }
 
   @Test
   void testListBeersByNameAndStyle() throws Exception {
     mockMvc.perform(get(API_STRING)
+            .with(httpBasic(username, password))
             .queryParam("name", "IPA")
             .queryParam("style", "IPA")
         )
@@ -76,6 +98,7 @@ class BeerControllerIT {
   @Test
   void testListBeerByNameAndStyleShowInventoryFalse() throws Exception {
     mockMvc.perform(get(API_STRING)
+            .with(httpBasic(username, password))
             .queryParam("name", "IPA")
             .queryParam("style", "IPA")
             .queryParam("showInventory", "false")
@@ -88,6 +111,7 @@ class BeerControllerIT {
   @Test
   void testListBeerByNameAndStyleShowInventoryTrue() throws Exception {
     mockMvc.perform(get(API_STRING)
+            .with(httpBasic(username, password))
             .queryParam("name", "IPA")
             .queryParam("style", "IPA")
             .queryParam("showInventory", "true")
@@ -100,6 +124,7 @@ class BeerControllerIT {
   @Test
   void testListBeerByNameAndStyleShowInventoryTrueSecondPage() throws Exception {
     mockMvc.perform(get(API_STRING)
+            .with(httpBasic(username, password))
             .queryParam("name", "IPA")
             .queryParam("style", "IPA")
             .queryParam("showInventory", "true")
@@ -114,6 +139,7 @@ class BeerControllerIT {
   @Test
   void testListBeersByName() throws Exception {
     mockMvc.perform(get(API_STRING)
+            .with(httpBasic(username, password))
             .queryParam("name", "IPA")
         )
         .andExpect(status().isOk())
@@ -123,6 +149,7 @@ class BeerControllerIT {
   @Test
   void testListBeersByStyle() throws Exception {
     mockMvc.perform(get(API_STRING)
+            .with(httpBasic(username, password))
             .queryParam("style", "STOUT")
         ).andExpect(status().isOk())
         .andExpect(jsonPath("$.content.length()", is(25)));
@@ -137,8 +164,9 @@ class BeerControllerIT {
 
     MvcResult mvcResult = mockMvc.perform(
             patch(PLACEHOLDER_API_STRING, testBeer.getId())
-                .contentType(MediaType.APPLICATION_JSON)
+                .with(httpBasic(username, password))
                 .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beerMap))
         )
         .andExpect(status().isBadRequest())
