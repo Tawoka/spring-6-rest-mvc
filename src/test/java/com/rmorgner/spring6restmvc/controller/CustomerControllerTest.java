@@ -1,6 +1,7 @@
 package com.rmorgner.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rmorgner.spring6restmvc.config.SpringSecConfig;
 import com.rmorgner.spring6restmvc.model.CustomerDTO;
 import com.rmorgner.spring6restmvc.services.CustomerService;
 import com.rmorgner.spring6restmvc.services.CustomerServiceImpl;
@@ -8,9 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,11 +25,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.core.Is.is;
 
 @WebMvcTest(CustomerController.class)
+@Import(SpringSecConfig.class)
 class CustomerControllerTest {
 
   @Autowired
@@ -38,6 +42,12 @@ class CustomerControllerTest {
 
   @MockBean
   CustomerService customerService;
+
+  @Value("${spring.security.user.name}")
+  String username;
+
+  @Value("${spring.security.user.password}")
+  String password;
 
   CustomerServiceImpl customerServiceImpl;
 
@@ -65,6 +75,7 @@ class CustomerControllerTest {
 
     mockMvc.perform(
         patch(PLACEHOLDER_API_STRING, testCustomer.getId())
+            .with(httpBasic(username, password))
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(customerMap))
@@ -81,6 +92,7 @@ class CustomerControllerTest {
   void testCustomerDelete() throws Exception {
     mockMvc.perform(
         delete(PLACEHOLDER_API_STRING, testCustomer.getId())
+            .with(httpBasic(username, password))
             .accept(MediaType.APPLICATION_JSON)
     ).andExpect(status().isNoContent());
 
@@ -93,11 +105,12 @@ class CustomerControllerTest {
   @Test
   void testCustomerUpdate() throws Exception {
     mockMvc.perform(
-        put(PLACEHOLDER_API_STRING, testCustomer.getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(testCustomer))
-    )
+            put(PLACEHOLDER_API_STRING, testCustomer.getId())
+                .with(httpBasic(username, password))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(testCustomer))
+        )
         .andExpect(status().isNoContent())
     ;
 
@@ -112,11 +125,12 @@ class CustomerControllerTest {
     given(customerService.saveNewCustomer(any(CustomerDTO.class))).willReturn(customerServiceImpl.listAllCustomers().get(1));
 
     mockMvc.perform(
-        post(API_STRING)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(testCustomer))
-    )
+            post(API_STRING)
+                .with(httpBasic(username, password))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(testCustomer))
+        )
         .andExpect(status().isCreated())
         .andExpect(header().exists("location"))
     ;
@@ -129,6 +143,7 @@ class CustomerControllerTest {
 
     mockMvc.perform(
             get(API_STRING)
+                .with(httpBasic(username, password))
                 .accept(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isOk())
@@ -143,6 +158,7 @@ class CustomerControllerTest {
 
     mockMvc.perform(
             get(PLACEHOLDER_API_STRING, testCustomer.getId())
+                .with(httpBasic(username, password))
                 .accept(MediaType.APPLICATION_JSON)
         )
         .andExpect(status().isOk())
@@ -158,6 +174,7 @@ class CustomerControllerTest {
 
     mockMvc.perform(
         get(PLACEHOLDER_API_STRING, UUID.randomUUID())
+            .with(httpBasic(username, password))
     ).andExpect(status().isNotFound());
   }
 
