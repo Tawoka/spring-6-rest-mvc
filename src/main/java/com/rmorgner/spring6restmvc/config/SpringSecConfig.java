@@ -16,9 +16,8 @@ public class SpringSecConfig {
               .authenticated();
         }
     );
-    http.httpBasic(Customizer.withDefaults());
-    http.csrf(httpSecurityCsrfConfigurer ->
-        httpSecurityCsrfConfigurer.ignoringRequestMatchers("/api/**"));
+    http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+//  TODO check for removal  http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
     return http.build();
   }
 
