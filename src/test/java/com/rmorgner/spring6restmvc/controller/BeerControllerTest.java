@@ -15,6 +15,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.*;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -72,9 +73,12 @@ class BeerControllerTest {
 
     given(beerService.patchBeerById(any(), any())).willReturn(Optional.of(testBeer));
 
+    //TODO look up later if there are better ways to do this, as the trainer BSed a lot here again
     mockMvc.perform(
             patch(PLACEHOLDER_API_STRING, testBeer.getId())
-                .with(httpBasic(username, password))
+                .with(jwt().jwt(token ->
+                    token.notBefore(Instant.now().minusSeconds(5L))
+                ))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beerMap))
