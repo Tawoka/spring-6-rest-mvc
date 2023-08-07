@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.web.servlet.request.*;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,11 +57,8 @@ class BeerControllerIT {
   @Autowired
   ObjectMapper objectMapper;
 
-  @Value("${spring.security.user.name}")
-  String username;
-
-  @Value("${spring.security.user.password}")
-  String password;
+  static final SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor JWT_REQUEST_POST_PROCESSOR =
+      jwt().jwt(token -> token.notBefore(Instant.now().minusSeconds(5L)));
 
   MockMvc mockMvc;
 
@@ -77,17 +76,16 @@ class BeerControllerIT {
   @Test
   void invalidAuthentication() throws Exception {
     mockMvc.perform(get(API_STRING)
-        .with(httpBasic(username, password + "100%totallyWrongPassword!"))
-        .queryParam("name", "IPA")
-        .queryParam("style", "IPA")
-    )
+            .queryParam("name", "IPA")
+            .queryParam("style", "IPA")
+        )
         .andExpect(status().isUnauthorized());
   }
 
   @Test
   void testListBeersByNameAndStyle() throws Exception {
     mockMvc.perform(get(API_STRING)
-            .with(httpBasic(username, password))
+            .with(JWT_REQUEST_POST_PROCESSOR)
             .queryParam("name", "IPA")
             .queryParam("style", "IPA")
         )
@@ -98,7 +96,7 @@ class BeerControllerIT {
   @Test
   void testListBeerByNameAndStyleShowInventoryFalse() throws Exception {
     mockMvc.perform(get(API_STRING)
-            .with(httpBasic(username, password))
+            .with(JWT_REQUEST_POST_PROCESSOR)
             .queryParam("name", "IPA")
             .queryParam("style", "IPA")
             .queryParam("showInventory", "false")
@@ -111,7 +109,7 @@ class BeerControllerIT {
   @Test
   void testListBeerByNameAndStyleShowInventoryTrue() throws Exception {
     mockMvc.perform(get(API_STRING)
-            .with(httpBasic(username, password))
+            .with(JWT_REQUEST_POST_PROCESSOR)
             .queryParam("name", "IPA")
             .queryParam("style", "IPA")
             .queryParam("showInventory", "true")
@@ -124,7 +122,7 @@ class BeerControllerIT {
   @Test
   void testListBeerByNameAndStyleShowInventoryTrueSecondPage() throws Exception {
     mockMvc.perform(get(API_STRING)
-            .with(httpBasic(username, password))
+            .with(JWT_REQUEST_POST_PROCESSOR)
             .queryParam("name", "IPA")
             .queryParam("style", "IPA")
             .queryParam("showInventory", "true")
@@ -139,7 +137,7 @@ class BeerControllerIT {
   @Test
   void testListBeersByName() throws Exception {
     mockMvc.perform(get(API_STRING)
-            .with(httpBasic(username, password))
+            .with(JWT_REQUEST_POST_PROCESSOR)
             .queryParam("name", "IPA")
         )
         .andExpect(status().isOk())
@@ -149,7 +147,7 @@ class BeerControllerIT {
   @Test
   void testListBeersByStyle() throws Exception {
     mockMvc.perform(get(API_STRING)
-            .with(httpBasic(username, password))
+            .with(JWT_REQUEST_POST_PROCESSOR)
             .queryParam("style", "STOUT")
         ).andExpect(status().isOk())
         .andExpect(jsonPath("$.content.length()", is(25)));
@@ -164,7 +162,7 @@ class BeerControllerIT {
 
     MvcResult mvcResult = mockMvc.perform(
             patch(PLACEHOLDER_API_STRING, testBeer.getId())
-                .with(httpBasic(username, password))
+                .with(JWT_REQUEST_POST_PROCESSOR)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beerMap))
